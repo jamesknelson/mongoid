@@ -43,10 +43,12 @@ module Mongoid #:nodoc:
           deleted = versions.first
           if deleted.paranoid?
             versions.delete_one(deleted)
-            collection.update(
-              atomic_selector,
-              { "$pull" => { "versions" => { "version" => deleted.version }}}
-            )
+            # collection.update(
+              # atomic_selector,
+              # { "$pull" => { "versions" => { "version" => deleted.version }}}
+            # )
+            collection.find(atomic_selector).
+              update({ "$pull" => { "versions" => { "version" => deleted.version }}})
           else
             versions.delete(deleted)
           end
